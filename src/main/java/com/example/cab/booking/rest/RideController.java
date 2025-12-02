@@ -2,6 +2,7 @@ package com.example.cab.booking.rest;
 
 import com.example.cab.booking.entity.Location;
 import com.example.cab.booking.entity.Ride;
+import com.example.cab.booking.service.dto.RideDTO;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,7 +11,7 @@ public class RideController {
 
     @PostMapping("/new")
     public Ride bookRide(@PathVariable String riderId,
-                           @RequestBody Location startLocation){
+                         @RequestBody RideDTO rideDTO){
         return null;
     }
 

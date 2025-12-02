@@ -1,9 +1,6 @@
 package com.example.cab.booking.service;
 
-import com.example.cab.booking.entity.Driver;
-import com.example.cab.booking.entity.DriverStatus;
-import com.example.cab.booking.entity.Location;
-import com.example.cab.booking.entity.RideStatus;
+import com.example.cab.booking.entity.*;
 import org.springframework.http.ResponseEntity;
 
 public interface DriverService {
@@ -14,5 +11,7 @@ public interface DriverService {
 
     public ResponseEntity<String> updateRideStatus(String driverId, String rideId, RideStatus rideStatus);
 
-    public ResponseEntity<Driver> findClosestAvailableDriver(String driverId, String rideId, Location pickup);
+    public Driver findClosestAvailableDriver(Location pickup);
+
+    void assignClosestDriver(Ride ride);
 }

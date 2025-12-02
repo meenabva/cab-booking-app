@@ -6,6 +6,7 @@ import com.example.cab.booking.repository.UserRepository;
 import com.example.cab.booking.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -55,12 +56,20 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public ResponseEntity<Driver> findClosestAvailableDriver(String driverId, String rideId, Location pickup) {
+    public Driver findClosestAvailableDriver(Location pickup) {
         List<Driver> driverList = userRepository.findAllAvailableDrivers();
-        Optional<Driver> closestDriver = driverList.stream()
-                .sorted(Comparator.comparingDouble(driver ->
-                        Location.findDistance(driver.getLocation(), pickup)))
-                .findFirst();
-        return ResponseEntity.ok(closestDriver.orElseThrow(() -> new RuntimeException("No driver found.")));
+        Optional<Driver> closestDriver = driverList.stream().min(Comparator.comparingDouble(driver ->
+                Location.findDistance(driver.getLocation(), pickup)));
+        return closestDriver.orElseThrow(() -> new RuntimeException("No driver found."));
+    }
+
+
+    @Override
+    @Async
+    public void assignClosestDriver(Ride ride) {
+        Driver closestDriver = findClosestAvailableDriver(ride.getStart());
+        ride.setDriver(closestDriver);
+        ride.setStatus(RideStatus.DRIVER_ASSIGNED);
+        rideRepository.save(ride);
     }
 }
