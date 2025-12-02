@@ -1,14 +1,15 @@
 package com.example.cab.booking.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@Embeddable
 public class Location {
 
     private double x;

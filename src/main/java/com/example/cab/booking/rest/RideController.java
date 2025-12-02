@@ -4,7 +4,8 @@ import com.example.cab.booking.entity.Location;
 import com.example.cab.booking.entity.Ride;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/api/{riderId}/ride")
+@RestController
+@RequestMapping("/api/{riderId}/ride")
 public class RideController {
 
     @PostMapping("/new")

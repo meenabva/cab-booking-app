@@ -10,9 +10,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, String> {
 
     @Query("""
-            SELECT * FROM USER 
-            WHERE userType = 'DRIVER'  
-            AND status = 'AVAILABLE' 
+            SELECT u FROM User u WHERE TYPE(u) = Driver AND u.status = 'AVAILABLE' 
             """)
     List<Driver> findAllAvailableDrivers();
 }

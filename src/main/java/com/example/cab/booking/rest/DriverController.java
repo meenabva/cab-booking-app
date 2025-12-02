@@ -2,31 +2,36 @@ package com.example.cab.booking.rest;
 
 import com.example.cab.booking.entity.DriverStatus;
 import com.example.cab.booking.entity.Location;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.cab.booking.entity.RideStatus;
+import com.example.cab.booking.service.DriverService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/api/driver")
+@RestController
+@RequestMapping("/api/driver")
 public class DriverController {
 
+    @Autowired
+    private DriverService driverService;
+
     @PatchMapping("/{driverId}/location")
-    public String updateDriverLocation(@RequestBody Location location){
-        return "Location updated.";
+    public ResponseEntity<String> updateDriverLocation(@PathVariable String driverId, @RequestBody Location location){
+        return driverService.updateDriverLocation(driverId, location);
     }
 
     @PatchMapping("/{driverId}/status")
-    public String updateDriverLocation(@RequestBody DriverStatus status){
-        return "Driver status updated.";
+    public ResponseEntity<String> updateDriverStatus(@PathVariable String driverId,@RequestBody DriverStatus status){
+        return driverService.updateDriverStatus(driverId, status);
     }
 
-    @PostMapping("/{rideId}/accept")
-    public String acceptRide(){
-        return "Ride accepted";
+    @PostMapping("/{driverId}/ride/{rideId}/accept")
+    public ResponseEntity<String> acceptRide(@PathVariable String driverId, @PathVariable String rideId){
+        return driverService.updateRideStatus(driverId, rideId, RideStatus.DRIVER_ACCEPTED);
     }
 
-    @PostMapping("/{rideId}/decline")
-    public String declineRide(){
-        return "Ride declined";
+    @PostMapping("/{driverId}/ride/{rideId}/decline")
+    public ResponseEntity<String> declineRide(@PathVariable String driverId, @PathVariable String rideId){
+        return driverService.updateRideStatus(driverId, rideId, RideStatus.DRIVER_DECLINED);
     }
 }
