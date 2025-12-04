@@ -1,6 +1,7 @@
 package com.example.cab.booking.repository;
 
 import com.example.cab.booking.entity.Driver;
+import com.example.cab.booking.entity.DriverStatus;
 import com.example.cab.booking.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, String> {
             SELECT u FROM User u WHERE TYPE(u) = Driver AND u.status = 'AVAILABLE' 
             """)
     List<Driver> findAllAvailableDrivers();
+
+    List<Driver> findByStatus(DriverStatus status);
 }

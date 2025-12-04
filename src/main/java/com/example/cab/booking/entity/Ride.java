@@ -13,22 +13,30 @@ public class Ride {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @OneToMany
-    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = true)
     private User driver;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "rider_id", referencedColumnName = "id", nullable = false)
     private User rider;
 
     @Embedded
-    private Location start;
+    @AttributeOverrides({
+            @AttributeOverride(name = "x", column = @Column(name = "start_x")),
+            @AttributeOverride(name = "y", column = @Column(name = "start_y"))
+    })
+    private Location pickUp;
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "x", column = @Column(name = "drop_x")),
+            @AttributeOverride(name = "y", column = @Column(name = "drop_y"))
+    })
     private Location drop;
 
     private float fare;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private RideStatus status;
 }

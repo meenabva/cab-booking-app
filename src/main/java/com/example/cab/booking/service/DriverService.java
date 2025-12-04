@@ -13,5 +13,9 @@ public interface DriverService {
 
     public Driver findClosestAvailableDriver(Location pickup);
 
-    void assignClosestDriver(Ride ride);
+    public void assignClosestDriver(Ride ride);
+
+    public ResponseEntity<String> startRide(String driverId, String rideId);
+
+    public ResponseEntity<Double> endRide(String driverId, String rideId);
 }

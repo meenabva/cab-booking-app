@@ -1,9 +1,6 @@
 package com.example.cab.booking.entity;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,7 +13,7 @@ public class Driver extends User {
     @Embedded
     private Location location;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private DriverStatus status;
 
     private String vehicleNumber;

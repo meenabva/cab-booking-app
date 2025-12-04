@@ -2,6 +2,7 @@ package com.example.cab.booking.rest;
 
 import com.example.cab.booking.entity.DriverStatus;
 import com.example.cab.booking.entity.Location;
+import com.example.cab.booking.entity.Ride;
 import com.example.cab.booking.entity.RideStatus;
 import com.example.cab.booking.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,15 @@ public class DriverController {
     @PostMapping("/{driverId}/ride/{rideId}/decline")
     public ResponseEntity<String> declineRide(@PathVariable String driverId, @PathVariable String rideId){
         return driverService.updateRideStatus(driverId, rideId, RideStatus.DRIVER_DECLINED);
+    }
+
+    @PatchMapping("/{driverId}/ride/{rideId}/start")
+    public ResponseEntity<Ride> startRide(@PathVariable String driverId, @PathVariable String rideId) {
+        return null;
+    }
+
+    @PatchMapping("/{driverId}/ride/{rideId}/end")
+    public ResponseEntity<Double> endRide(@PathVariable String driverId, @PathVariable String rideId) {
+        return null;
     }
 }

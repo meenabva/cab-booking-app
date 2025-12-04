@@ -1,6 +1,5 @@
 package com.example.cab.booking.service.impl;
 
-import com.example.cab.booking.entity.Driver;
 import com.example.cab.booking.entity.Ride;
 import com.example.cab.booking.entity.RideStatus;
 import com.example.cab.booking.entity.User;
@@ -9,6 +8,7 @@ import com.example.cab.booking.repository.UserRepository;
 import com.example.cab.booking.service.DriverService;
 import com.example.cab.booking.service.RideService;
 import com.example.cab.booking.service.dto.RideDTO;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class RideServiceImpl implements RideService {
                 .orElseThrow(() -> new RuntimeException("Rider not found."));
         Ride ride = new Ride();
         ride.setRider(rider);
-        ride.setStart(rideDTO.pickupLocation());
+        ride.setPickUp(rideDTO.pickupLocation());
         ride.setDrop(rideDTO.dropLocation());
         ride.setStatus(RideStatus.BOOKED);
         ride = rideRepository.save(ride);
@@ -40,6 +40,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Ride> updateRideStatus(String rideId, String status) {
         Ride ride = rideRepository.findById(rideId)
                 .orElseThrow(() -> new RuntimeException("Ride not found."));
