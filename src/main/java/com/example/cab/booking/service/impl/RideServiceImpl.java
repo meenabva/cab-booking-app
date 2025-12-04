@@ -3,6 +3,7 @@ package com.example.cab.booking.service.impl;
 import com.example.cab.booking.entity.Ride;
 import com.example.cab.booking.entity.RideStatus;
 import com.example.cab.booking.entity.User;
+import com.example.cab.booking.exception.NotFoundException;
 import com.example.cab.booking.repository.RideRepository;
 import com.example.cab.booking.repository.UserRepository;
 import com.example.cab.booking.service.DriverService;
@@ -28,7 +29,7 @@ public class RideServiceImpl implements RideService {
     @Override
     public ResponseEntity<Ride> bookRide(String riderId, RideDTO rideDTO) {
         User rider = userRepository.findById(riderId)
-                .orElseThrow(() -> new RuntimeException("Rider not found."));
+                .orElseThrow(() -> new NotFoundException("Rider not found."));
         Ride ride = new Ride();
         ride.setRider(rider);
         ride.setPickUp(rideDTO.pickupLocation());
@@ -43,7 +44,7 @@ public class RideServiceImpl implements RideService {
     @Transactional
     public ResponseEntity<Ride> updateRideStatus(String rideId, String status) {
         Ride ride = rideRepository.findById(rideId)
-                .orElseThrow(() -> new RuntimeException("Ride not found."));
+                .orElseThrow(() -> new NotFoundException("Ride not found."));
         ride.setStatus(RideStatus.valueOf(status));
         ride = rideRepository.save(ride);
         return ResponseEntity.ok(ride);
@@ -52,7 +53,7 @@ public class RideServiceImpl implements RideService {
     @Override
     public ResponseEntity<Ride> getRideDetails(String rideId) {
         Ride ride = rideRepository.findById(rideId)
-                .orElseThrow(() -> new RuntimeException("Ride not found."));
+                .orElseThrow(() -> new NotFoundException("Ride not found."));
         return ResponseEntity.ok(ride);
     }
 }

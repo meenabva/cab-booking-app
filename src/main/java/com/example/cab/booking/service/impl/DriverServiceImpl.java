@@ -1,6 +1,8 @@
 package com.example.cab.booking.service.impl;
 
 import com.example.cab.booking.entity.*;
+import com.example.cab.booking.exception.NoCabsAvailableException;
+import com.example.cab.booking.exception.NotFoundException;
 import com.example.cab.booking.repository.RideRepository;
 import com.example.cab.booking.repository.UserRepository;
 import com.example.cab.booking.service.DriverService;
@@ -27,13 +29,15 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private PriceCalculationStrategy priceCalculationStrategy;
 
+    private final double maxDistanceKm = 10.0;
+
     @Override
     @Transactional
     public ResponseEntity<String> updateDriverLocation(String driverId, Location location) {
         Optional<User> user = userRepository.findById(driverId);
-        User driver = user.orElseThrow(() -> new RuntimeException("Driver not found."));
+        User driver = user.orElseThrow(() -> new NotFoundException("Driver not found."));
         if(!(driver instanceof Driver)){
-            throw new RuntimeException("Driver not found.");
+            throw new NotFoundException("Driver not found.");
         }
         ((Driver) driver).setLocation(location);
         userRepository.save(driver);
@@ -44,9 +48,9 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public ResponseEntity<String> updateDriverStatus(String driverId, DriverStatus driverStatus) {
         Optional<User> user = userRepository.findById(driverId);
-        User driver = user.orElseThrow(() -> new RuntimeException("Driver not found."));
+        User driver = user.orElseThrow(() -> new NotFoundException("Driver not found."));
         if(!(driver instanceof Driver)){
-            throw new RuntimeException("Driver not found.");
+            throw new NotFoundException("Driver not found.");
         }
         ((Driver) driver).setStatus(driverStatus);
         userRepository.save(driver);
@@ -62,7 +66,7 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     private Ride saveRideStatus(String driverId, String rideId, RideStatus rideStatus) {
         Ride ride = rideRepository.findByDriverIdAndRideId(driverId, rideId)
-                .orElseThrow(() -> new RuntimeException("Ride not found."));
+                .orElseThrow(() -> new NotFoundException("Ride not found."));
         ride.setStatus(rideStatus);
         ride = rideRepository.save(ride);
         return ride;
@@ -73,9 +77,11 @@ public class DriverServiceImpl implements DriverService {
         List<Driver> driverList = userRepository.findAllAvailableDrivers();
         Optional<Driver> closestDriver = driverList.stream()
                 .filter(d -> d != null && d.getLocation() != null)
-                                            .min(Comparator.comparingDouble(driver ->
-                                                Location.findDistance(driver.getLocation(), pickup)));
-        return closestDriver.orElseThrow(() -> new RuntimeException("No driver found."));
+                .map(d -> new java.util.AbstractMap.SimpleEntry<>(d, Location.findDistance(d.getLocation(), pickup)))
+                .filter(e -> e.getValue() <= maxDistanceKm)
+                .min(java.util.Comparator.comparingDouble(java.util.Map.Entry::getValue))
+                .map(java.util.Map.Entry::getKey);
+        return closestDriver.orElseThrow(() -> new NoCabsAvailableException("No driver found."));
     }
 
 
